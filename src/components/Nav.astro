@@ -1,0 +1,42 @@
+---
+const links = [
+  { href: "/", label: "首页" },
+  { href: "/#software", label: "软件" },
+  { href: "/#files", label: "资源" },
+  { href: "/blog", label: "推文" },
+  { href: "/contact", label: "联系" },
+];
+---
+
+<header>
+  <div class="nav-container">
+    <a href="/" class="logo">૮ ˶ᵔ ᵕ ᵔ˶ ა</a>
+    <ul class="nav-links" id="navLinks">
+      {links.map(link => (
+        <li><a href={link.href}>{link.label}</a></li>
+      ))}
+    </ul>
+    <button class="menu-toggle" id="menuToggle" aria-label="菜单">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+</header>
+
+<script>
+  const menuToggle = document.getElementById("menuToggle");
+  const navLinks = document.getElementById("navLinks");
+
+  menuToggle?.addEventListener("click", () => {
+    menuToggle.classList.toggle("active");
+    navLinks?.classList.toggle("active");
+  });
+
+  navLinks?.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", () => {
+      menuToggle?.classList.remove("active");
+      navLinks?.classList.remove("active");
+    });
+  });
+</script>

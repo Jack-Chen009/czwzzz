@@ -1,0 +1,50 @@
+---
+// 这个组件不需要 props，文字写在脚本里
+---
+
+<span class="typing-text" id="typingText"></span><span class="cursor"></span>
+
+<script>
+  const texts = [
+    "Hello World: )",
+    "哈囉₍ᐢ.ˬ.ᐢ₎♡~",
+    "🎀真実はいつもひとつ⚽",
+    "탐험은 결코 끝나지 않는다"
+  ];
+
+  const typingEl = document.getElementById("typingText");
+  let textIndex = 0;
+  let charIndex = 0;
+  let isDeleting = false;
+  let typingSpeed = 110;
+
+  function type() {
+    if (!typingEl) return;
+    const currentText = texts[textIndex];
+
+    if (isDeleting) {
+      typingEl.textContent = currentText.substring(0, charIndex - 1);
+      charIndex--;
+      typingSpeed = 45;
+    } else {
+      typingEl.textContent = currentText.substring(0, charIndex + 1);
+      charIndex++;
+      typingSpeed = 110;
+    }
+
+    if (!isDeleting && charIndex === currentText.length) {
+      typingSpeed = 2000;
+      isDeleting = true;
+    } else if (isDeleting && charIndex === 0) {
+      isDeleting = false;
+      textIndex = (textIndex + 1) % texts.length;
+      typingSpeed = 500;
+    }
+
+    setTimeout(type, typingSpeed);
+  }
+
+  window.addEventListener("load", () => {
+    setTimeout(type, 600);
+  });
+</script>

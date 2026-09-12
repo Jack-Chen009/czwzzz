@@ -1,0 +1,33 @@
+---
+import Nav from '../components/Nav.astro';
+import '../styles/global.css';
+
+const { title = "(￣o￣) zzZ💤" } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <Nav />
+    <slot />
+
+    <script>
+      // 点击涟漪
+      document.addEventListener("click", (e) => {
+        const ripple = document.createElement("div");
+        ripple.className = "click-ripple";
+        ripple.style.left = e.clientX + "px";
+        ripple.style.top = e.clientY + "px";
+        ripple.style.width = "60px";
+        ripple.style.height = "60px";
+        document.body.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 550);
+      });
+    </script>
+  </body>
+</html>

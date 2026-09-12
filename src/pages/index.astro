@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Typewriter from '../components/Typewriter.astro';
+---
+
+<BaseLayout title="(￣o￣) zzZ💤">
+  <section class="hero" id="home">
+    <p class="greeting">歡迎你嚟^_^</p>
+    <h1 class="main-title">
+      <Typewriter />
+    </h1>
+
+    <div class="content-list">
+      <div class="list-group">
+        <a href="#works">作品</a>
+        <a href="#projects">脚本</a>
+        <a href="#writing">文章</a>
+        <a href="#resources">资源</a>
+        <a href="#events">讯息</a>
+        <a href="#games">游戏</a>
+        <a href="/contact">联系</a>
+        <a href="#archive">归档</a>
+      </div>
+
+      <div class="list-divider"></div>
+
+      <div class="timeline-title">最近更新</div>
+
+      <div class="timeline-item">
+        <span class="timeline-date">08月</span>
+        <span class="timeline-tag">讯息</span>
+        <div class="timeline-text">
+          <a href="/blog">个人网站重构10%</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
