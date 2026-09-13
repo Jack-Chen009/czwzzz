@@ -20,7 +20,7 @@ a {
 }
 
 /* ========== 顶部导航 ========== */
-header {
+.site-header {
   position: fixed;
   top: 0;
   left: 0;
@@ -268,6 +268,147 @@ main.contact-main {
   max-width: 860px;
   margin: 0 auto;
   padding: 132px 32px 100px;
+}
+
+/* ========== 博客详情页 ========== */
+.article-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 124px 32px 100px;
+}
+
+.article-shell {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.article-header {
+  margin-bottom: 42px;
+}
+
+.article-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 34px;
+  padding: 8px 14px 8px 10px;
+  border: 1px solid #e8e8e8;
+  color: #777;
+  font-size: 0.82rem;
+  transition: color 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.article-back span:first-child {
+  color: #111;
+  font-size: 1.1rem;
+  line-height: 1;
+  transition: transform 0.2s;
+}
+
+.article-back:hover {
+  border-color: #111;
+  color: #111;
+  transform: translateX(-2px);
+}
+
+.article-back:hover span:first-child {
+  transform: translateX(-3px);
+}
+
+.article-eyebrow {
+  margin-bottom: 12px;
+  color: #999;
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+}
+
+.article-header h1 {
+  color: #111;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  line-height: 1.25;
+}
+
+.article-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-top: 24px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid #eee;
+  color: #999;
+  font-size: 0.82rem;
+}
+
+.article-meta > time::after {
+  content: "·";
+  margin-left: 14px;
+  color: #ccc;
+}
+
+.article-meta > time:last-child::after {
+  content: none;
+}
+
+.article-tag {
+  display: inline-block;
+  padding: 3px 9px;
+  border: 1px solid #e5e5e5;
+  color: #777;
+  font-size: 0.75rem;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.article-tag:hover {
+  border-color: #111;
+  color: #111;
+}
+
+.article-content {
+  font-size: 1rem;
+}
+
+.tag-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 124px 32px 100px;
+}
+
+.tag-header {
+  max-width: 720px;
+  margin: 0 auto 42px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #eee;
+}
+
+.tag-header .article-back {
+  margin-bottom: 34px;
+}
+
+.tag-header h1 {
+  color: #111;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  line-height: 1.25;
+}
+
+.tag-header > p:last-child {
+  margin-top: 12px;
+  color: #999;
+  font-size: 0.85rem;
+}
+
+.tag-page .post-list {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.article-tag-active {
+  border-color: #111;
+  color: #111;
 }
 
 .blog-header {
@@ -666,6 +807,28 @@ footer {
 
   .blog-page {
     padding: 120px 24px 80px;
+  }
+
+  .article-page {
+    padding: 112px 24px 80px;
+  }
+
+  .tag-page {
+    padding: 112px 24px 80px;
+  }
+
+  .article-back {
+    margin-bottom: 28px;
+  }
+
+  .article-meta {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .article-meta > time::after {
+    content: none;
   }
 
   .markdown-uploader {
