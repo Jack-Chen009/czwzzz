@@ -1,6 +1,21 @@
 ---
+// src/pages/index.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Typewriter from '../components/Typewriter.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+// 1. 获取所有非草稿文章，按日期倒序，取最新 3 篇
+const allPosts = await getCollection('blog', ({ data }: CollectionEntry<'blog'>) => !data.draft);
+const recentPosts = allPosts
+  .sort((a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) => 
+    b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+  )
+  .slice(0, 3);
+
+// 2. 格式化月份为 "08月"
+const formatMonth = (date: Date) => {
+  return String(date.getMonth() + 1).padStart(2, '0') + '月';
+};
 ---
 
 <BaseLayout title="(￣o￣) zzZ💤">
@@ -14,7 +29,7 @@ import Typewriter from '../components/Typewriter.astro';
       <div class="list-group">
         <a href="#works">作品</a>
         <a href="#projects">脚本</a>
-        <a href="#writing">文章</a>
+        <a href="#Astro">文章</a>
         <a href="#resources">资源</a>
         <a href="#events">讯息</a>
         <a href="#games">游戏</a>
@@ -26,13 +41,32 @@ import Typewriter from '../components/Typewriter.astro';
 
       <div class="timeline-title">最近更新</div>
 
-      <div class="timeline-item">
-        <span class="timeline-date">08月</span>
-        <span class="timeline-tag">讯息</span>
-        <div class="timeline-text">
-          <a href="/blog">个人网站重构10%</a>
+      {/* 动态渲染最近更新的文章，并在每条中插入标签链接 */}
+      {recentPosts.map((post: CollectionEntry<'blog'>) => (
+        <div class="timeline-item">
+          <span class="timeline-date">{formatMonth(post.data.pubDate)}</span>
+          
+          {/* 这里就是你要插入的标签 map，它现在有明确的 post 上下文 */}
+          {post.data.tags.map((tag: string) => (
+            <a href={`/tags/${tag}/`} class="timeline-tag">#{tag}</a>
+          ))}
+
+          <div class="timeline-text">
+            <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+          </div>
         </div>
-      </div>
+      ))}
+
+      {/* 如果还没有文章，显示占位提示 */}
+      {recentPosts.length === 0 && (
+        <div class="timeline-item">
+          <span class="timeline-date">--</span>
+          <span class="timeline-tag">暂无</span>
+          <div class="timeline-text">
+            <span>暂无更新</span>
+          </div>
+        </div>
+      )}
     </div>
   </section>
 </BaseLayout>

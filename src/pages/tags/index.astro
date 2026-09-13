@@ -1,0 +1,48 @@
+---
+// src/pages/tags/index.astro
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// 1. 获取所有未标记为草稿的文章
+const posts = await getCollection('blog', ({ data }: CollectionEntry<'blog'>) => !data.draft);
+
+// 2. 统计每个标签对应的文章数量
+const tagCounts = posts.reduce((acc: Record<string, number>, post: CollectionEntry<'blog'>) => {
+  post.data.tags?.forEach((tag: string) => {
+    acc[tag] = (acc[tag] || 0) + 1;
+  });
+  return acc;
+}, {});
+
+// 3. 提取所有唯一标签并按字母排序
+const allTags = Object.keys(tagCounts).sort();
+---
+
+<BaseLayout title="所有标签 - czwzzz.my">
+  <main class="max-w-4xl mx-auto px-6 py-12">
+    {/* 页面头部 */}
+    <header class="mb-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+      <h1 class="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+        标签归档
+      </h1>
+      <p class="mt-2 text-gray-500 dark:text-gray-400">
+        共计 {allTags.length} 个分类标签，点击即可查看相关文章。
+      </p>
+    </header>
+
+    {/* 标签网格 */}
+    <div class="flex flex-wrap gap-3">
+      {allTags.map((tag: string) => (
+        <a 
+          href={`/tags/${tag}/`} 
+          class="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-200 shadow-sm hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-all hover:-translate-y-0.5"
+        >
+          <span>#{tag}</span>
+          <span class="text-xs px-1.5 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+            {tagCounts[tag]}
+          </span>
+        </a>
+      ))}
+    </div>
+  </main>
+</BaseLayout>
