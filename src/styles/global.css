@@ -29,6 +29,7 @@ a {
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid #eee;
+  padding-top: env(safe-area-inset-top);
 }
 
 .nav-container {
@@ -70,6 +71,9 @@ a {
   font-weight: 400;
   position: relative;
   padding: 4px 0;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
   transition: color 0.25s;
 }
 
@@ -159,6 +163,7 @@ a {
 .content-list {
   width: 100%;
   max-width: 720px;
+  min-width: 0;
   opacity: 0;
   animation: fadeIn 0.8s ease forwards 0.8s;
 }
@@ -243,6 +248,8 @@ a {
   font-size: 0.95rem;
   color: #333;
   flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .timeline-text a {
@@ -376,6 +383,12 @@ main.contact-main {
   padding: 124px 32px 100px;
 }
 
+.tag-index-page {
+  max-width: 896px;
+  margin: 0 auto;
+  padding: 124px 32px 100px;
+}
+
 .tag-header {
   max-width: 720px;
   margin: 0 auto 42px;
@@ -453,7 +466,7 @@ main.contact-main {
 
 .album-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
   gap: 16px;
   margin: 24px 0 0;
 }
@@ -549,6 +562,7 @@ main.contact-main {
   background: #f4f4f4;
   box-shadow: 0 6px 18px rgba(17, 17, 17, 0.05);
   cursor: zoom-in;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .photo-tile img {
@@ -563,7 +577,8 @@ main.contact-main {
   z-index: 100;
   display: grid;
   place-items: center;
-  padding: 24px;
+  padding: max(24px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+    max(24px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
   visibility: hidden;
   opacity: 0;
   transition: opacity 0.2s ease, visibility 0.2s ease;
@@ -614,6 +629,8 @@ main.contact-main {
   font-size: 1.5rem;
   line-height: 1;
   cursor: pointer;
+  min-width: 44px;
+  min-height: 44px;
 }
 
 .photo-download-button {
@@ -625,6 +642,7 @@ main.contact-main {
   color: #222;
   font-size: 0.85rem;
   text-decoration: none;
+  min-height: 44px;
 }
 
 .photo-download-button:hover {
@@ -737,6 +755,7 @@ body.lightbox-open {
   align-items: center;
   justify-content: space-between;
   gap: 20px;
+  flex-wrap: wrap;
 }
 
 .section-heading {
@@ -774,6 +793,7 @@ body.lightbox-open {
   margin-top: 8px;
   color: #888;
   font-size: 0.9rem;
+  overflow-wrap: anywhere;
 }
 
 .post-card-meta {
@@ -909,18 +929,23 @@ footer {
 /* ========== 响应式 ========== */
 @media (max-width: 768px) {
   .nav-container {
+    height: 60px;
+    padding: 0 20px;
+  }
+
+  .nav-container {
     gap: 20px;
   }
 
   .nav-links {
     position: fixed;
-    top: 64px;
+    top: calc(60px + env(safe-area-inset-top));
     left: 0;
     width: 100%;
     background: #fff;
     flex-direction: column;
     align-items: flex-start;
-    padding: 24px 32px;
+    padding: 12px 20px 20px;
     gap: 18px;
     transform: translateY(-120%);
     transition: transform 0.3s ease;
@@ -933,6 +958,10 @@ footer {
 
   .menu-toggle {
     display: flex;
+    min-width: 44px;
+    min-height: 44px;
+    justify-content: center;
+    align-items: center;
   }
 
   .menu-toggle.active span:nth-child(1) {
@@ -947,7 +976,19 @@ footer {
 
   .list-group {
     grid-template-columns: 1fr 1fr;
-    gap: 4px 20px;
+    gap: 2px 16px;
+  }
+
+  .hero {
+    min-height: auto;
+    padding: 112px 20px 64px;
+  }
+
+  .main-title {
+    max-width: 100%;
+    margin-bottom: 36px;
+    font-size: clamp(2rem, 10vw, 3rem);
+    overflow-wrap: anywhere;
   }
 
   .timeline-item {
@@ -960,23 +1001,37 @@ footer {
   }
 
   main.contact-main {
-    padding: 120px 24px 80px;
+    padding: 112px 20px 64px;
   }
 
   .blog-page {
-    padding: 120px 24px 80px;
+    padding: 112px 20px 64px;
+  }
+
+  .upload-page {
+    padding: 112px 20px 64px;
   }
 
   .photo-wall {
     column-count: 2;
+    column-gap: 10px;
+  }
+
+  .photo-tile {
+    margin-bottom: 10px;
+    border-radius: 10px;
   }
 
   .article-page {
-    padding: 112px 24px 80px;
+    padding: 104px 20px 64px;
   }
 
   .tag-page {
-    padding: 112px 24px 80px;
+    padding: 104px 20px 64px;
+  }
+
+  .tag-index-page {
+    padding: 104px 20px 64px;
   }
 
   .article-back {
@@ -1001,7 +1056,81 @@ footer {
     text-align: left;
   }
 
-  .post-tags {
-    justify-content: flex-start;
-  }
+.post-tags {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.album-back-link {
+  margin-bottom: 24px;
+}
+
+.album-meta {
+  padding: 12px 14px 14px;
+}
+
+.photo-lightbox-content {
+  width: 100%;
+  max-width: 100%;
+}
+
+.photo-lightbox-content img {
+  max-width: 100%;
+  max-height: calc(100svh - 120px);
+}
+
+.photo-lightbox-close {
+  top: -8px;
+  right: -4px;
+}
+}
+
+@media (max-width: 480px) {
+.logo {
+  font-size: 1rem;
+}
+
+.list-group {
+  grid-template-columns: 1fr;
+}
+
+.timeline-item {
+  padding: 16px 0;
+}
+
+.timeline-tag {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.photo-wall {
+  column-count: 1;
+}
+
+.album-grid {
+  grid-template-columns: 1fr;
+}
+
+.post-card {
+  padding: 20px 0;
+}
+
+.post-card h2 {
+  font-size: 1.08rem;
+}
+
+.article-header h1,
+.tag-header h1,
+.blog-header h1,
+.upload-header h1 {
+  font-size: clamp(1.8rem, 9vw, 2.4rem);
+  overflow-wrap: anywhere;
+}
+
+.section-heading {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 10px;
+}
 }

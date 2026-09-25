@@ -17,7 +17,7 @@ const links = [
         <li><a href={link.href}>{link.label}</a></li>
       ))}
     </ul>
-    <button class="menu-toggle" id="menuToggle" aria-label="菜单">
+    <button class="menu-toggle" id="menuToggle" aria-label="打开菜单" aria-expanded="false" aria-controls="navLinks">
       <span></span>
       <span></span>
       <span></span>
@@ -30,14 +30,18 @@ const links = [
   const navLinks = document.getElementById("navLinks");
 
   menuToggle?.addEventListener("click", () => {
-    menuToggle.classList.toggle("active");
-    navLinks?.classList.toggle("active");
+    const isOpen = menuToggle.classList.toggle("active");
+    navLinks?.classList.toggle("active", isOpen);
+    menuToggle.setAttribute("aria-expanded", String(isOpen));
+    menuToggle.setAttribute("aria-label", isOpen ? "关闭菜单" : "打开菜单");
   });
 
   navLinks?.querySelectorAll("a").forEach(link => {
     link.addEventListener("click", () => {
       menuToggle?.classList.remove("active");
       navLinks?.classList.remove("active");
+      menuToggle?.setAttribute("aria-expanded", "false");
+      menuToggle?.setAttribute("aria-label", "打开菜单");
     });
   });
 </script>
