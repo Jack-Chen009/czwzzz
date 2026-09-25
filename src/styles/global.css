@@ -1161,10 +1161,6 @@ footer {
   text-overflow: ellipsis;
 }
 
-.photo-wall {
-  column-count: 1;
-}
-
 .album-grid {
   grid-template-columns: 1fr;
 }

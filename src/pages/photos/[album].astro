@@ -64,6 +64,7 @@ const { title, photos } = Astro.props;
           tabindex="0"
           data-original-src={photo.originalSrc}
           data-alt={photo.alt}
+          data-orientation="unknown"
           aria-label={`查看${photo.alt}原图`}
         >
           <img src={photo.src} alt={photo.alt} loading="lazy" decoding="async" />
@@ -90,6 +91,18 @@ const { title, photos } = Astro.props;
   const lightboxDownload = document.getElementById('lightboxDownload') as HTMLAnchorElement | null;
   const tiles = document.querySelectorAll<HTMLElement>('.photo-tile');
 
+  const setPhotoOrientation = (tile: HTMLElement) => {
+    const image = tile.querySelector('img');
+    if (!image || !image.naturalWidth || !image.naturalHeight) return;
+
+    const orientation = image.naturalWidth === image.naturalHeight
+      ? 'square'
+      : image.naturalWidth > image.naturalHeight
+        ? 'landscape'
+        : 'portrait';
+    tile.dataset.orientation = orientation;
+  };
+
   const closeLightbox = () => {
     lightbox?.classList.remove('is-open');
     lightbox?.setAttribute('aria-hidden', 'true');
@@ -111,6 +124,9 @@ const { title, photos } = Astro.props;
   };
 
   tiles.forEach((tile) => {
+    const image = tile.querySelector('img');
+    image?.addEventListener('load', () => setPhotoOrientation(tile), { once: true });
+    setPhotoOrientation(tile);
     tile.addEventListener('click', () => openLightbox(tile));
     tile.addEventListener('keydown', (event) => {
       if (event.key === 'Enter' || event.key === ' ') {
