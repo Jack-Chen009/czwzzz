@@ -13,31 +13,8 @@ posts.sort((a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) =>
     <div class="blog-header">
       <p class="blog-eyebrow">BLOG / NOTES</p>
       <h1>博客与推文</h1>
-      <p>记录技术探索与日常随笔，也可以上传 Markdown 文件即时阅读。</p>
+      <p>记录技术探索与日常随笔。</p>
     </div>
-
-    <section class="markdown-uploader" aria-labelledby="upload-title">
-      <div class="uploader-heading">
-        <div>
-          <p class="section-label" id="upload-title">本地 Markdown 阅读器</p>
-          <p class="uploader-hint">文件只在浏览器中读取，不会上传到服务器。</p>
-        </div>
-        <label class="upload-button" for="markdown-file">选择文件</label>
-        <input id="markdown-file" type="file" accept=".md,.markdown,text/markdown" />
-      </div>
-
-      <label class="drop-zone" id="drop-zone" for="markdown-file">
-        <span class="drop-icon" aria-hidden="true">↑</span>
-        <span><strong>拖拽 Markdown 文件到这里</strong>，或点击选择</span>
-        <small>支持 .md 和 .markdown 文件</small>
-      </label>
-
-      <div class="upload-status" id="upload-status" role="status" aria-live="polite"></div>
-      <article class="markdown-preview" id="markdown-preview" hidden>
-        <div class="preview-meta" id="preview-meta"></div>
-        <div class="prose" id="preview-content"></div>
-      </article>
-    </section>
 
     <section class="post-archive" aria-labelledby="archive-title">
       <div class="section-heading">
@@ -69,64 +46,4 @@ posts.sort((a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) =>
   </div>
 </BaseLayout>
 
-<script>
-  import { marked } from 'marked';
 
-  const input = document.querySelector<HTMLInputElement>('#markdown-file');
-  const dropZone = document.querySelector<HTMLElement>('#drop-zone');
-  const status = document.querySelector<HTMLElement>('#upload-status');
-  const preview = document.querySelector<HTMLElement>('#markdown-preview');
-  const previewMeta = document.querySelector<HTMLElement>('#preview-meta');
-  const previewContent = document.querySelector<HTMLElement>('#preview-content');
-
-  function readMarkdown(file: File) {
-    const isMarkdown = file.name.toLowerCase().endsWith('.md') || file.name.toLowerCase().endsWith('.markdown');
-    if (!isMarkdown) {
-      status!.textContent = '请选择 .md 或 .markdown 文件。';
-      status!.className = 'upload-status is-error';
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const source = String(reader.result ?? '');
-      const frontMatterMatch = source.match(/^---\s*\n([\s\S]*?)\n---\s*\n?/);
-      const frontMatter = frontMatterMatch?.[1] ?? '';
-      const markdown = source.replace(/^---\s*\n[\s\S]*?\n---\s*\n?/, '');
-      const title = frontMatter.match(/^title:\s*["']?(.+?)["']?\s*$/m)?.[1] ?? file.name;
-      const date = frontMatter.match(/^(?:pubDate|date):\s*["']?(.+?)["']?\s*$/m)?.[1];
-      const tags = frontMatter.match(/^tags:\s*\[(.*?)\]\s*$/m)?.[1]
-        ?.split(',')
-        .map((tag) => tag.trim().replace(/^["']|["']$/g, ''))
-        .filter(Boolean);
-
-      previewMeta!.textContent = `${title}${date ? ` · ${date}` : ''}${tags?.length ? ` · ${tags.map((tag) => `#${tag}`).join(' ')}` : ''}`;
-      previewContent!.innerHTML = await marked.parse(markdown);
-      preview!.hidden = false;
-      status!.textContent = `已读取：${file.name}`;
-      status!.className = 'upload-status is-success';
-    };
-    reader.onerror = () => {
-      status!.textContent = '读取文件失败，请重试。';
-      status!.className = 'upload-status is-error';
-    };
-    reader.readAsText(file);
-  }
-
-  input?.addEventListener('change', () => {
-    const file = input.files?.[0];
-    if (file) readMarkdown(file);
-  });
-
-  dropZone?.addEventListener('dragover', (event) => {
-    event.preventDefault();
-    dropZone.classList.add('is-dragging');
-  });
-  dropZone?.addEventListener('dragleave', () => dropZone.classList.remove('is-dragging'));
-  dropZone?.addEventListener('drop', (event) => {
-    event.preventDefault();
-    dropZone.classList.remove('is-dragging');
-    const file = event.dataTransfer?.files[0];
-    if (file) readMarkdown(file);
-  });
-</script>
