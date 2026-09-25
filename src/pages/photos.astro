@@ -85,11 +85,9 @@ if (existsSync(rootDir)) {
       {albums.length > 0 ? (
         <div class="album-grid">
           {albums.map((album) => (
-            <button
-              type="button"
+            <a
+              href={`/photos/${encodeURIComponent(album.title)}`}
               class="album-card"
-              data-title={album.title}
-              data-photos={JSON.stringify(album.photos.map((photo) => photo.src))}
               aria-label={`查看${album.title}`}
             >
               <img src={album.cover} alt={album.title} />
@@ -97,7 +95,7 @@ if (existsSync(rootDir)) {
                 <h2>{album.title}</h2>
                 <span>{album.photos.length} 张</span>
               </div>
-            </button>
+            </a>
           ))}
         </div>
       ) : (

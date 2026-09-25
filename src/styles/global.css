@@ -459,6 +459,9 @@ main.contact-main {
 }
 
 .album-card {
+  display: block;
+  color: inherit;
+  text-decoration: none;
   width: 100%;
   overflow: hidden;
   border: 1px solid #f2f2f2;
@@ -504,6 +507,53 @@ main.contact-main {
 .album-meta span {
   color: #888;
   font-size: 0.72rem;
+}
+
+.album-page {
+  max-width: 1240px;
+}
+
+.album-back-link {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 34px;
+  color: #666;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.album-back-link:hover {
+  color: #111;
+}
+
+.album-page-header {
+  margin-bottom: 30px;
+}
+
+.album-page-header > p:last-child {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.photo-wall {
+  column-count: 4;
+  column-gap: 16px;
+}
+
+.photo-tile {
+  break-inside: avoid;
+  margin: 0 0 16px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #f4f4f4;
+  box-shadow: 0 6px 18px rgba(17, 17, 17, 0.05);
+}
+
+.photo-tile img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .album-detail-panel {
@@ -836,6 +886,10 @@ footer {
 
   .blog-page {
     padding: 120px 24px 80px;
+  }
+
+  .photo-wall {
+    column-count: 2;
   }
 
   .article-page {

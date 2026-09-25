@@ -1,0 +1,65 @@
+---
+import { existsSync, readdirSync, statSync } from 'node:fs';
+import { join } from 'node:path';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+interface Photo {
+  src: string;
+  alt: string;
+}
+
+export function getStaticPaths() {
+  const rootDir = join(process.cwd(), 'public', 'gallery');
+  const imagePattern = /\.(jpe?g|png|gif|webp|avif)$/i;
+  const getAlbumPhotos = (directory: string, albumName?: string): Photo[] =>
+    readdirSync(directory, { withFileTypes: true })
+      .filter((entry) => entry.isFile() && imagePattern.test(entry.name))
+      .map((entry) => {
+        const filePath = join(directory, entry.name);
+        const { mtimeMs } = statSync(filePath);
+
+        return {
+          src: albumName ? `/gallery/${albumName}/${entry.name}` : `/gallery/${entry.name}`,
+          alt: entry.name.replace(/\.[^/.]+$/, '') || 'photo',
+          mtimeMs,
+        };
+      })
+      .sort((a, b) => b.mtimeMs - a.mtimeMs)
+      .map(({ src, alt }) => ({ src, alt }));
+
+  if (!existsSync(rootDir)) return [];
+
+  const folders = readdirSync(rootDir, { withFileTypes: true }).filter((entry) => entry.isDirectory());
+  if (folders.length > 0) {
+    return folders.flatMap((folder) => {
+      const photos = getAlbumPhotos(join(rootDir, folder.name), folder.name);
+      return photos.length > 0 ? [{ params: { album: folder.name }, props: { title: folder.name, photos } }] : [];
+    });
+  }
+
+  const photos = getAlbumPhotos(rootDir);
+  return photos.length > 0 ? [{ params: { album: 'default' }, props: { title: '默认相册', photos } }] : [];
+}
+
+const { title, photos } = Astro.props;
+---
+
+<BaseLayout title={`${title} - 照片 - czwzzz.my`}>
+  <div class="upload-page album-page">
+    <a class="album-back-link" href="/photo">← 返回 /photo</a>
+
+    <header class="upload-header album-page-header">
+      <p class="page-kicker">MEMORY / {title}</p>
+      <h1>{title}</h1>
+      <p>{photos.length} 张照片</p>
+    </header>
+
+    <section class="photo-wall" aria-label={`${title}中的照片`}>
+      {photos.map((photo) => (
+        <figure class="photo-tile">
+          <img src={photo.src} alt={photo.alt} loading="lazy" />
+        </figure>
+      ))}
+    </section>
+  </div>
+</BaseLayout>
