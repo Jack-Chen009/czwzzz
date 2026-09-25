@@ -5,6 +5,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
 interface Photo {
   src: string;
+  originalSrc: string;
   alt: string;
 }
 
@@ -19,13 +20,14 @@ export function getStaticPaths() {
         const { mtimeMs } = statSync(filePath);
 
         return {
-          src: albumName ? `/gallery/${albumName}/${entry.name}` : `/gallery/${entry.name}`,
+          src: albumName ? `/gallery-optimized/${albumName}/${entry.name.replace(/\.[^/.]+$/, '.webp')}` : `/gallery-optimized/${entry.name.replace(/\.[^/.]+$/, '.webp')}`,
+          originalSrc: albumName ? `/gallery/${albumName}/${entry.name}` : `/gallery/${entry.name}`,
           alt: entry.name.replace(/\.[^/.]+$/, '') || 'photo',
           mtimeMs,
         };
       })
       .sort((a, b) => b.mtimeMs - a.mtimeMs)
-      .map(({ src, alt }) => ({ src, alt }));
+      .map(({ src, originalSrc, alt }) => ({ src, originalSrc, alt }));
 
   if (!existsSync(rootDir)) return [];
 
@@ -56,10 +58,73 @@ const { title, photos } = Astro.props;
 
     <section class="photo-wall" aria-label={`${title}中的照片`}>
       {photos.map((photo) => (
-        <figure class="photo-tile">
-          <img src={photo.src} alt={photo.alt} loading="lazy" />
+        <figure
+          class="photo-tile"
+          role="button"
+          tabindex="0"
+          data-original-src={photo.originalSrc}
+          data-alt={photo.alt}
+          aria-label={`查看${photo.alt}原图`}
+        >
+          <img src={photo.src} alt={photo.alt} loading="lazy" decoding="async" />
         </figure>
       ))}
     </section>
+
+    <div class="photo-lightbox" id="photoLightbox" aria-hidden="true">
+      <div class="photo-lightbox-backdrop" data-lightbox-close></div>
+      <div class="photo-lightbox-content" role="dialog" aria-modal="true" aria-label="原图预览">
+        <button class="photo-lightbox-close" type="button" data-lightbox-close aria-label="关闭原图预览">×</button>
+        <img id="lightboxImage" src="" alt="" />
+        <div class="photo-lightbox-actions">
+          <a id="lightboxDownload" class="photo-download-button" href="" download>下载原图</a>
+        </div>
+      </div>
+    </div>
   </div>
 </BaseLayout>
+
+<script>
+  const lightbox = document.getElementById('photoLightbox');
+  const lightboxImage = document.getElementById('lightboxImage') as HTMLImageElement | null;
+  const lightboxDownload = document.getElementById('lightboxDownload') as HTMLAnchorElement | null;
+  const tiles = document.querySelectorAll<HTMLElement>('.photo-tile');
+
+  const closeLightbox = () => {
+    lightbox?.classList.remove('is-open');
+    lightbox?.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('lightbox-open');
+    if (lightboxImage) lightboxImage.removeAttribute('src');
+  };
+
+  const openLightbox = (tile: HTMLElement) => {
+    const originalSrc = tile.dataset.originalSrc;
+    const alt = tile.dataset.alt || '原图';
+    if (!originalSrc || !lightbox || !lightboxImage || !lightboxDownload) return;
+
+    lightboxImage.src = originalSrc;
+    lightboxImage.alt = alt;
+    lightboxDownload.href = originalSrc;
+    lightbox.classList.add('is-open');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('lightbox-open');
+  };
+
+  tiles.forEach((tile) => {
+    tile.addEventListener('click', () => openLightbox(tile));
+    tile.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openLightbox(tile);
+      }
+    });
+  });
+
+  lightbox?.querySelectorAll('[data-lightbox-close]').forEach((element) => {
+    element.addEventListener('click', closeLightbox);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && lightbox?.classList.contains('is-open')) closeLightbox();
+  });
+</script>

@@ -14,7 +14,7 @@ const getAlbumPhotos = (directory: string, albumName?: string) =>
       const { mtimeMs } = statSync(filePath);
 
       return {
-        src: albumName ? `/gallery/${albumName}/${entry.name}` : `/gallery/${entry.name}`,
+        src: albumName ? `/gallery-optimized/${albumName}/${entry.name.replace(/\.[^/.]+$/, '.webp')}` : `/gallery-optimized/${entry.name.replace(/\.[^/.]+$/, '.webp')}`,
         alt: entry.name.replace(/\.[^/.]+$/, '') || 'photo',
         mtimeMs,
       };
@@ -31,7 +31,7 @@ const getCoverPhoto = (directory: string, albumName?: string) => {
     return photos[0]?.src ?? '';
   }
 
-  return albumName ? `/gallery/${albumName}/${indexFile.name}` : `/gallery/${indexFile.name}`;
+  return albumName ? `/gallery-optimized/${albumName}/${indexFile.name.replace(/\.[^/.]+$/, '.webp')}` : `/gallery-optimized/${indexFile.name.replace(/\.[^/.]+$/, '.webp')}`;
 };
 
 const albums = [] as Array<{ title: string; cover: string; photos: Array<{ src: string; alt: string }> }>;
@@ -90,7 +90,7 @@ if (existsSync(rootDir)) {
               class="album-card"
               aria-label={`查看${album.title}`}
             >
-              <img src={album.cover} alt={album.title} />
+              <img src={album.cover} alt={album.title} loading="lazy" decoding="async" />
               <div class="album-meta">
                 <h2>{album.title}</h2>
                 <span>{album.photos.length} 张</span>
