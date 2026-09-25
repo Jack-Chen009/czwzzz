@@ -1,10 +1,12 @@
 import { mkdir, readdir, stat } from 'node:fs/promises';
 import { dirname, join, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 
 const sourceRoot = join(process.cwd(), 'public', 'gallery');
 const outputRoot = join(process.cwd(), 'public', 'gallery-optimized');
 const imagePattern = /\.(jpe?g|png|gif|webp|avif)$/i;
+const optimizerMtime = (await stat(fileURLToPath(import.meta.url))).mtimeMs;
 
 async function optimizeDirectory(directory) {
   const entries = await readdir(directory, { withFileTypes: true });
@@ -25,13 +27,14 @@ async function optimizeDirectory(directory) {
 
     try {
       const outputStats = await stat(outputPath);
-      if (outputStats.mtimeMs >= sourceStats.mtimeMs) return;
+      if (outputStats.mtimeMs >= Math.max(sourceStats.mtimeMs, optimizerMtime)) return;
     } catch {
       // Generate the derivative when it does not exist yet.
     }
 
     await mkdir(dirname(outputPath), { recursive: true });
     await sharp(sourcePath)
+      .rotate()
       .resize({ width: 2400, withoutEnlargement: true })
       .webp({ quality: 78, effort: 4 })
       .toFile(outputPath);
