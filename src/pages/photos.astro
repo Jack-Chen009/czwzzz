@@ -1,0 +1,46 @@
+---
+import { existsSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const photoDir = join(process.cwd(), 'public', 'gallery');
+const photos = existsSync(photoDir)
+  ? readdirSync(photoDir, { withFileTypes: true })
+      .filter((entry) => entry.isFile() && /\.(jpe?g|png|gif|webp|avif)$/i.test(entry.name))
+      .map((entry) => ({
+        src: `/gallery/${entry.name}`,
+        alt: entry.name.replace(/\.[^/.]+$/, '') || 'photo',
+      }))
+      .sort((a, b) => a.src.localeCompare(b.src))
+  : [];
+---
+
+<BaseLayout title="照片 - czwzzz.my">
+  <div class="upload-page">
+    <div class="upload-header">
+      <p class="page-kicker">MEMORY / ALBUM</p>
+      <h1>照片</h1>
+    </div>
+
+    <section class="gallery-section" aria-labelledby="gallery-title">
+      <div class="section-heading">
+        <p class="section-label" id="gallery-title">照片记录</p>
+      </div>
+
+      {photos.length > 0 ? (
+        <div class="gallery-grid">
+          {photos.map((photo) => (
+            <figure class="photo-card">
+              <img src={photo.src} alt={photo.alt} />
+            </figure>
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <span>暂无照片</span>
+          <p>请将图片放到 public/gallery 文件夹中。</p>
+        </div>
+      )}
+    </section>
+  </div>
+</BaseLayout>
