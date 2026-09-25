@@ -22,6 +22,18 @@ const getAlbumPhotos = (directory: string, albumName?: string) =>
     .sort((a, b) => b.mtimeMs - a.mtimeMs)
     .map(({ src, alt }) => ({ src, alt }));
 
+const getCoverPhoto = (directory: string, albumName?: string) => {
+  const indexFile = readdirSync(directory, { withFileTypes: true })
+    .find((entry) => entry.isFile() && /^index\.[^./\\]+$/i.test(entry.name));
+
+  if (!indexFile) {
+    const photos = getAlbumPhotos(directory, albumName);
+    return photos[0]?.src ?? '';
+  }
+
+  return albumName ? `/gallery/${albumName}/${indexFile.name}` : `/gallery/${indexFile.name}`;
+};
+
 const albums = [] as Array<{ title: string; cover: string; photos: Array<{ src: string; alt: string }> }>;
 
 if (existsSync(rootDir)) {
@@ -35,7 +47,7 @@ if (existsSync(rootDir)) {
       return photos.length > 0
         ? {
             title: entry.name,
-            cover: photos[0].src,
+            cover: getCoverPhoto(dirPath, entry.name) || photos[0].src,
             photos,
           }
         : null;
@@ -47,9 +59,10 @@ if (existsSync(rootDir)) {
   } else {
     const rootPhotos = getAlbumPhotos(rootDir);
     if (rootPhotos.length > 0) {
+      const defaultCover = getCoverPhoto(rootDir);
       albums.push({
         title: '默认相册',
-        cover: rootPhotos[0].src,
+        cover: defaultCover || rootPhotos[0].src,
         photos: rootPhotos,
       });
     }
