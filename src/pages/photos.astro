@@ -26,34 +26,35 @@ const albums = [] as Array<{ title: string; cover: string; photos: Array<{ src: 
 
 if (existsSync(rootDir)) {
   const entries = readdirSync(rootDir, { withFileTypes: true });
+  const folderAlbums = entries
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => {
+      const dirPath = join(rootDir, entry.name);
+      const photos = getAlbumPhotos(dirPath, entry.name);
 
-  const rootPhotos = getAlbumPhotos(rootDir);
+      return photos.length > 0
+        ? {
+            title: entry.name,
+            cover: photos[0].src,
+            photos,
+          }
+        : null;
+    })
+    .filter(Boolean) as Array<{ title: string; cover: string; photos: Array<{ src: string; alt: string }> }>;
 
-  if (rootPhotos.length > 0) {
-    albums.push({
-      title: '默认相册',
-      cover: rootPhotos[0].src,
-      photos: rootPhotos,
-    });
-  }
-
-  for (const entry of entries) {
-    if (!entry.isDirectory()) continue;
-
-    const dirPath = join(rootDir, entry.name);
-    const validPhotos = getAlbumPhotos(dirPath, entry.name);
-
-    if (validPhotos.length > 0) {
+  if (folderAlbums.length > 0) {
+    albums.push(...folderAlbums);
+  } else {
+    const rootPhotos = getAlbumPhotos(rootDir);
+    if (rootPhotos.length > 0) {
       albums.push({
-        title: entry.name,
-        cover: validPhotos[0].src,
-        photos: validPhotos,
+        title: '默认相册',
+        cover: rootPhotos[0].src,
+        photos: rootPhotos,
       });
     }
   }
 }
-
-const selectedAlbum = albums[0] ?? null;
 ---
 
 <BaseLayout title="照片 - czwzzz.my">
@@ -88,8 +89,8 @@ const selectedAlbum = albums[0] ?? null;
         </div>
       ) : (
         <div class="empty-state">
-          <span>暂无照片</span>
-          <p>请将图片放到 public/gallery 或其子分类文件夹中。</p>
+          <span>暂无相册</span>
+          <p>请在 public/gallery 下创建独立文件夹，并将每个相册图片放入对应文件夹中。若暂时保留根目录图片，将自动显示为“默认相册”。</p>
         </div>
       )}
     </section>
