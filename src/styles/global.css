@@ -1147,6 +1147,39 @@ footer {
 }
 }
 
+@media (max-width: 768px) and (prefers-color-scheme: dark) {
+  .site-header {
+    background: rgba(24, 24, 27, 0.92);
+    border-bottom-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.24);
+  }
+
+  .logo {
+    color: #f4f4f5;
+  }
+
+  .menu-toggle span {
+    background: #f4f4f5;
+  }
+
+  .nav-links {
+    background: #18181b;
+    border-bottom-color: #3f3f46;
+  }
+
+  .nav-links a {
+    color: #d4d4d8;
+  }
+
+  .nav-links a:hover {
+    color: #fff;
+  }
+
+  .nav-links a::after {
+    background: #fff;
+  }
+}
+
 @media (max-width: 480px) {
 .logo {
   font-size: 1rem;
