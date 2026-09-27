@@ -20,8 +20,25 @@ body:not(.contact-page) main.grow {
   align-items: center;
 }
 
+main.grow {
+  width: 100%;
+  min-width: 0;
+}
+
 body:not(.contact-page) main.grow > * {
   width: 100%;
+  min-width: 0;
+}
+
+.contact-main,
+.blog-page,
+.article-page,
+.tag-page,
+.tag-index-page,
+.upload-page {
+  width: 100%;
+  min-width: 0;
+  margin-inline: auto;
 }
 
 a {
@@ -1074,7 +1091,8 @@ footer {
     max-width: 100%;
     margin-bottom: 36px;
     font-size: clamp(1.125rem, 7vw, 3rem);
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .timeline-item {
