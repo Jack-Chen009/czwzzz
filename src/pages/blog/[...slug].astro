@@ -28,28 +28,22 @@ const { Content } = await render(post);
           <span>返回文章列表</span>
         </a>
         <p class="article-eyebrow">BLOG / ARTICLE</p>
-        <h1>
-        {post.data.title}
-        </h1>
+        <h1>{post.data.title}</h1>
 
         <div class="article-meta">
-        <time datetime={post.data.pubDate.toISOString()}>
-          发布于 {post.data.pubDate.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })}
-        </time>
+          <time class="article-date" datetime={post.data.pubDate.toISOString()}>
+            发布于 {post.data.pubDate.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })}
+          </time>
 
-        {/* 详情页顶部的标签 */}
-        {post.data.tags && post.data.tags.length > 0 && (
-          <div class="flex flex-wrap gap-2">
-            {post.data.tags.map((tag: string) => (
-              <a 
-                href={`/tags/${tag}/`} 
-                  class="article-tag"
-              >
-                #{tag}
-              </a>
-            ))}
-          </div>
-        )}
+          {post.data.tags && post.data.tags.length > 0 && (
+            <div class="article-tag-list">
+              {post.data.tags.map((tag: string) => (
+                <a href={`/tags/${tag}/`} class="article-tag">
+                  #{tag}
+                </a>
+              ))}
+            </div>
+          )}
         </div>
       </header>
 
