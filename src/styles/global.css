@@ -384,6 +384,45 @@ main.contact-main::before {
   margin-top: 18px;
 }
 
+.blog-page .section-heading {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.blog-page .section-heading a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  margin-left: auto;
+  padding: 7px 14px;
+  border: 1px solid rgba(17, 17, 17, 0.14);
+  border-radius: 999px;
+  background: transparent;
+  color: #555;
+  white-space: nowrap;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.blog-page .section-heading a:hover {
+  border-color: rgba(17, 17, 17, 0.32);
+  background: rgba(17, 17, 17, 0.04);
+  color: #111;
+}
+
+@media (prefers-color-scheme: dark) {
+  .blog-page .section-heading a {
+    border-color: rgba(255, 255, 255, 0.18);
+    color: #d4d4d8;
+  }
+
+  .blog-page .section-heading a:hover {
+    border-color: rgba(255, 255, 255, 0.36);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+  }
+}
+
 .blog-post {
   min-width: 0;
 }
@@ -398,7 +437,7 @@ main.contact-main::before {
   padding: 22px 24px;
   border: 1px solid rgba(17, 17, 17, 0.1);
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.32);
+  background: transparent;
   box-shadow: 0 6px 20px rgba(17, 17, 17, 0.035);
   color: inherit;
   -webkit-backdrop-filter: blur(12px) saturate(140%);
@@ -457,7 +496,7 @@ main.contact-main::before {
 @media (prefers-color-scheme: dark) {
   .blog-post-link {
     border-color: rgba(255, 255, 255, 0.14);
-    background: rgba(24, 24, 27, 0.28);
+    background: transparent;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
   }
 
@@ -1247,6 +1286,12 @@ footer {
     flex-basis: 100%;
     max-width: none;
     text-align: left;
+  }
+
+  .blog-page .section-heading {
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: nowrap;
   }
 
   .blog-page .post-tags {
