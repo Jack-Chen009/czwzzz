@@ -6,6 +6,8 @@
 }
 
 body {
+  display: flex;
+  flex-direction: column;
   font-family: "Helvetica Neue", "Hiragino Sans", "PingFang SC", "Microsoft YaHei", sans-serif;
   color: #111;
   line-height: 1.6;
