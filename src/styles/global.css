@@ -374,6 +374,12 @@ main.contact-main::before {
   margin-bottom: 34px;
 }
 
+.blog-page .blog-header {
+  margin-bottom: 34px;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
 .blog-header h1 {
   line-height: 1.2;
 }
