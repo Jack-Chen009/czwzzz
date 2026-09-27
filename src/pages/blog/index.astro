@@ -24,26 +24,27 @@ posts.sort((a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) =>
 
       <div class="post-list">
         {posts.map((post: CollectionEntry<'blog'>) => (
-          <article class="post-card">
-            <div class="post-card-main">
-              <h2><a href={`/blog/${post.id}/`}>{post.data.title}</a></h2>
-              {post.data.description && <p>{post.data.description}</p>}
-            </div>
-            <div class="post-card-meta">
-              <time datetime={post.data.pubDate.toISOString()}>
-                {post.data.pubDate.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })}
-              </time>
-              {post.data.tags?.length > 0 && (
-                <div class="post-tags">
-                  {post.data.tags.map((tag: string) => <span>#{tag}</span>)}
-                </div>
-              )}
-            </div>
+          <article class="blog-post">
+            <a class="blog-post-link" href={`/blog/${post.id}/`}>
+              <div class="post-card-main">
+                <h2>{post.data.title}</h2>
+                {post.data.description && <p>{post.data.description}</p>}
+              </div>
+              <div class="post-card-meta">
+                <time datetime={post.data.pubDate.toISOString()}>
+                  {post.data.pubDate.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })}
+                </time>
+                {post.data.tags?.length > 0 && (
+                  <div class="post-tags">
+                    {post.data.tags.map((tag: string) => <span>#{tag}</span>)}
+                  </div>
+                )}
+              </div>
+            </a>
           </article>
         ))}
       </div>
     </section>
   </div>
 </BaseLayout>
-
 
