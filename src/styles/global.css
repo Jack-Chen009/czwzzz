@@ -195,7 +195,7 @@ a {
 .home-links {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
-  margin-bottom: 48px;
+  margin-bottom: 88px;
 }
 
 .home-link {
@@ -238,13 +238,6 @@ a {
 .home-link:hover .home-link-arrow {
   color: #111;
   transform: translate(2px, -2px);
-}
-
-.list-divider {
-  width: 100%;
-  height: 1px;
-  background: #eee;
-  margin: 8px 0 40px;
 }
 
 .timeline-title {
