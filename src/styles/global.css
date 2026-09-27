@@ -311,6 +311,7 @@ main.contact-main {
   max-width: 720px;
   margin: 0 auto;
   padding: 140px 32px 100px;
+  isolation: isolate;
 }
 
 /* ========== 博客页 ========== */

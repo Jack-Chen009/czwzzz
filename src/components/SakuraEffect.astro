@@ -1,0 +1,205 @@
+<div class="sakura-effect">
+  <canvas class="sakura-canvas" aria-hidden="true"></canvas>
+  <fieldset class="sakura-controls">
+    <legend>樱花特效</legend>
+    <label class="sakura-control" for="sakura-speed">
+      <span>花瓣速度</span>
+      <input id="sakura-speed" type="range" min="0.3" max="2" step="0.1" value="1" />
+      <output for="sakura-speed">1.0×</output>
+    </label>
+    <label class="sakura-control" for="sakura-count">
+      <span>花瓣数量</span>
+      <input id="sakura-count" type="range" min="0" max="120" step="5" value="45" />
+      <output for="sakura-count">45</output>
+    </label>
+    <p class="sakura-motion-note" hidden>系统已启用减少动态效果，樱花动画已暂停。</p>
+  </fieldset>
+</div>
+
+<script>
+  const effect = document.querySelector(".sakura-effect");
+  const canvas = effect?.querySelector("canvas");
+  const speedInput = effect?.querySelector<HTMLInputElement>("#sakura-speed");
+  const countInput = effect?.querySelector<HTMLInputElement>("#sakura-count");
+  const speedOutput = effect?.querySelector("output[for='sakura-speed']");
+  const countOutput = effect?.querySelector("output[for='sakura-count']");
+  const motionNote = effect?.querySelector<HTMLElement>(".sakura-motion-note");
+  const contactMain = effect?.closest("main.contact-main");
+  const context = canvas?.getContext("2d");
+
+  if (canvas && speedInput && countInput && speedOutput && countOutput && motionNote && contactMain && context) {
+    contactMain.prepend(canvas);
+
+    type Petal = {
+      x: number;
+      y: number;
+      size: number;
+      fall: number;
+      drift: number;
+      rotation: number;
+      spin: number;
+      phase: number;
+      opacity: number;
+    };
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let width = 0;
+    let height = 0;
+    let pixelRatio = 1;
+    let petals: Petal[] = [];
+    let animationFrame = 0;
+    let speed = Number(speedInput.value);
+
+    function createPetal(randomY = false): Petal {
+      return {
+        x: Math.random() * width,
+        y: randomY ? Math.random() * height : -12,
+        size: 4 + Math.random() * 6,
+        fall: 0.6 + Math.random() * 1.2,
+        drift: (Math.random() - 0.5) * 0.8,
+        rotation: Math.random() * Math.PI * 2,
+        spin: (Math.random() - 0.5) * 0.035,
+        phase: Math.random() * Math.PI * 2,
+        opacity: 0.35 + Math.random() * 0.45,
+      };
+    }
+
+    function resizeCanvas() {
+      pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = Math.round(width * pixelRatio);
+      canvas.height = Math.round(height * pixelRatio);
+      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+      petals = Array.from({ length: Number(countInput.value) }, () => createPetal(true));
+    }
+
+    function drawPetal(petal: Petal) {
+      context.save();
+      context.translate(petal.x, petal.y);
+      context.rotate(petal.rotation);
+      context.fillStyle = `rgba(241, 155, 184, ${petal.opacity})`;
+      context.beginPath();
+      context.moveTo(0, -petal.size);
+      context.bezierCurveTo(petal.size * 0.9, -petal.size * 0.7, petal.size, petal.size * 0.5, 0, petal.size);
+      context.bezierCurveTo(-petal.size, petal.size * 0.5, -petal.size * 0.9, -petal.size * 0.7, 0, -petal.size);
+      context.fill();
+      context.restore();
+    }
+
+    function animate() {
+      context.clearRect(0, 0, width, height);
+
+      for (const petal of petals) {
+        petal.y += petal.fall * speed;
+        petal.x += petal.drift * speed + Math.sin(petal.y * 0.012 + petal.phase) * 0.35 * speed;
+        petal.rotation += petal.spin * speed;
+
+        if (petal.y > height + petal.size * 2) {
+          Object.assign(petal, createPetal());
+        } else if (petal.x < -20) {
+          petal.x = width + 10;
+        } else if (petal.x > width + 20) {
+          petal.x = -10;
+        }
+
+        drawPetal(petal);
+      }
+
+      animationFrame = window.requestAnimationFrame(animate);
+    }
+
+    function syncMotionPreference() {
+      speedInput.disabled = reducedMotion.matches;
+      countInput.disabled = reducedMotion.matches;
+      motionNote.hidden = !reducedMotion.matches;
+
+      if (reducedMotion.matches) {
+        window.cancelAnimationFrame(animationFrame);
+        context.clearRect(0, 0, width, height);
+      } else {
+        animationFrame = window.requestAnimationFrame(animate);
+      }
+    }
+
+    speedInput.addEventListener("input", () => {
+      speed = Number(speedInput.value);
+      speedOutput.value = `${speed.toFixed(1)}×`;
+    });
+
+    countInput.addEventListener("input", () => {
+      const count = Number(countInput.value);
+      countOutput.value = String(count);
+      petals = Array.from({ length: count }, () => createPetal(true));
+    });
+
+    window.addEventListener("resize", resizeCanvas);
+    reducedMotion.addEventListener("change", syncMotionPreference);
+    resizeCanvas();
+    syncMotionPreference();
+  } else {
+    console.warn("樱花特效初始化失败：浏览器不支持 Canvas 或页面控件缺失。");
+  }
+</script>
+
+<style>
+  .sakura-effect {
+    margin-top: 24px;
+  }
+
+  .sakura-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .sakura-controls {
+    width: min(100%, 360px);
+    margin: 0 auto;
+    padding: 12px 16px 14px;
+    border: 1px solid rgba(236, 190, 205, 0.65);
+    border-radius: 14px;
+    background: rgba(255, 250, 252, 0.82);
+    text-align: left;
+  }
+
+  .sakura-controls legend {
+    padding: 0 8px;
+    color: #a86d80;
+    font-size: 0.72rem;
+    letter-spacing: 1px;
+  }
+
+  .sakura-control {
+    display: grid;
+    grid-template-columns: 70px minmax(0, 1fr) 38px;
+    align-items: center;
+    gap: 10px;
+    color: #765d65;
+    font-size: 0.78rem;
+  }
+
+  .sakura-control + .sakura-control {
+    margin-top: 8px;
+  }
+
+  .sakura-control input {
+    width: 100%;
+    accent-color: #d887a1;
+  }
+
+  .sakura-control output {
+    color: #a86d80;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
+  .sakura-motion-note {
+    margin-top: 8px;
+    color: #888;
+    font-size: 0.72rem;
+  }
+</style>
