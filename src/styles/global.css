@@ -1049,8 +1049,8 @@ footer {
   .main-title {
     max-width: 100%;
     margin-bottom: 36px;
-    font-size: clamp(2rem, 10vw, 3rem);
-    overflow-wrap: anywhere;
+    font-size: clamp(1.125rem, 7vw, 3rem);
+    white-space: nowrap;
   }
 
   .timeline-item {
