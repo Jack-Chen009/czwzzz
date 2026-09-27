@@ -1,0 +1,72 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const messages = await getCollection(
+    'messages',
+    ({ data }: CollectionEntry<'messages'>) => !data.draft,
+  );
+
+  return messages.map((message: CollectionEntry<'messages'>) => ({
+    params: { slug: message.id },
+    props: { message },
+  }));
+}
+
+interface Props {
+  message: CollectionEntry<'messages'>;
+}
+
+const { message } = Astro.props;
+const { Content } = await render(message);
+const formatDate = (date: Date) =>
+  date.toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+---
+
+<BaseLayout
+  title={`${message.data.title} - 讯息 - czwzzz.my`}
+  description={message.data.description}
+>
+  <div class="message-page message-detail-page">
+    <article class="message-article">
+      <a class="message-back" href="/messages/">
+        <span aria-hidden="true">←</span>
+        <span>返回讯息</span>
+      </a>
+
+      <header class="message-article-header">
+        <p class="message-eyebrow">转载 / {message.data.type === 'news' ? '新闻' : '帖子'}</p>
+        <h1>{message.data.title}</h1>
+        <div class="message-article-meta">
+          <time datetime={message.data.pubDate.toISOString()}>
+            发布于 {formatDate(message.data.pubDate)}
+          </time>
+          {message.data.tags.length > 0 && (
+            <div class="message-tags">
+              {message.data.tags.map((tag: string) => <span>#{tag}</span>)}
+            </div>
+          )}
+        </div>
+        <p class="message-source">
+          原文来源：
+          <a href={message.data.sourceUrl} target="_blank" rel="noopener noreferrer">
+            {message.data.source}<span aria-hidden="true"> ↗</span>
+          </a>
+        </p>
+      </header>
+
+      <div class="message-content prose">
+        <Content />
+      </div>
+
+      <a class="message-original-link" href={message.data.sourceUrl} target="_blank" rel="noopener noreferrer">
+        阅读原文 <span aria-hidden="true">↗</span>
+      </a>
+    </article>
+  </div>
+</BaseLayout>

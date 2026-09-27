@@ -16,13 +16,21 @@ const blogCollection = defineCollection({
   }),
 });
 
-// 2. 如果你有 contact 联系页面或其他内容集合，也在这里导出
-// const contactCollection = defineCollection({
-//   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/contact' }),
-//   schema: z.object({ ... })
-// });
+const messagesCollection = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/messages' }),
+  schema: z.object({
+    title: z.string(),
+    type: z.enum(['news', 'post']).default('post'),
+    pubDate: z.date(),
+    source: z.string(),
+    sourceUrl: z.string().url(),
+    description: z.string().optional(),
+    tags: z.array(z.string()).default([]),
+    draft: z.boolean().default(false),
+  }),
+});
 
 export const collections = {
   'blog': blogCollection, // 对应目录 src/content/blog/
-  // 'contact': contactCollection, // 对应目录 src/content/contact/
+  'messages': messagesCollection,
 };

@@ -1,0 +1,54 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const messages = await getCollection(
+  'messages',
+  ({ data }: CollectionEntry<'messages'>) => !data.draft,
+);
+messages.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const formatDate = (date: Date) =>
+  date.toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+---
+
+<BaseLayout
+  title="讯息 - czwzzz.my"
+  description="转载值得保存的新闻与帖子，并注明原始来源。"
+>
+  <div class="message-page">
+    <header class="message-page-header">
+      <p class="message-eyebrow">MESSAGES / REPOSTS</p>
+      <h1>讯息</h1>
+      <p>转载值得保存的新闻与帖子，并注明原始来源。</p>
+    </header>
+
+    {messages.length > 0 ? (
+      <section class="message-list" aria-label="转载内容">
+        {messages.map((message: CollectionEntry<'messages'>) => (
+          <a class="message-card" href={`/messages/${message.id}/`}>
+            <div class="message-card-meta">
+              <span class="message-type">{message.data.type === 'news' ? '新闻' : '帖子'}</span>
+              <time datetime={message.data.pubDate.toISOString()}>{formatDate(message.data.pubDate)}</time>
+            </div>
+            <h2>{message.data.title}</h2>
+            {message.data.description && <p class="message-description">{message.data.description}</p>}
+            <div class="message-card-footer">
+              <span>来源：{message.data.source}</span>
+              <span class="message-card-arrow" aria-hidden="true">↗</span>
+            </div>
+          </a>
+        ))}
+      </section>
+    ) : (
+      <div class="message-empty">
+        <h2>还没有讯息</h2>
+        <p>将转载内容以 Markdown 文件添加到 <code>src/content/messages/</code>，填写标题、类型、来源、原文链接和日期即可发布。</p>
+      </div>
+    )}
+  </div>
+</BaseLayout>
