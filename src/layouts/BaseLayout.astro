@@ -24,7 +24,7 @@ const {
     <link rel="icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
   </head>
-  <body class="bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100 font-sans antialiased min-h-screen flex flex-col">
+  <body class={`bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100 font-sans antialiased min-h-screen flex flex-col${Astro.url.pathname === '/contact' ? ' contact-page' : ''}`}>
     
     <!-- 全局导航栏 -->
     <Nav />
