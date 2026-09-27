@@ -18,12 +18,12 @@ const tagCounts = posts.reduce((acc: Record<string, number>, post: CollectionEnt
 const allTags = Object.keys(tagCounts).sort();
 ---
 
-<BaseLayout title="所有标签 - czwzzz.my">
+<BaseLayout title="标签 - czwzzz.my">
   <main class="tag-index-page">
     {/* 页面头部 */}
     <header class="mb-10 pb-4 border-b border-gray-200 dark:border-gray-800">
       <h1 class="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-        标签归档
+        标签
       </h1>
       <p class="mt-2 text-gray-500 dark:text-gray-400">
         共计 {allTags.length} 个分类标签，点击即可查看相关文章。

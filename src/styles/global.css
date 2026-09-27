@@ -649,6 +649,14 @@ main.contact-main::before {
   padding: 124px 32px 100px;
 }
 
+.tag-index-page header h1 {
+  color: #111;
+}
+
+.tag-index-page header p {
+  color: #666;
+}
+
 .tag-index-grid {
   display: flex;
   flex-direction: column;
@@ -702,20 +710,20 @@ main.contact-main::before {
 
 @media (prefers-color-scheme: dark) {
   .tag-index-link {
-    border-color: rgba(255, 255, 255, 0.14);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
-    color: #e4e4e7;
+    border-color: rgba(17, 17, 17, 0.12);
+    box-shadow: 0 4px 14px rgba(17, 17, 17, 0.035);
+    color: #333;
   }
 
   .tag-index-link:hover {
-    border-color: rgba(255, 255, 255, 0.3);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24);
-    color: #fff;
+    border-color: rgba(17, 17, 17, 0.28);
+    box-shadow: 0 8px 20px rgba(17, 17, 17, 0.08);
+    color: #111;
   }
 
   .tag-index-count {
-    border-color: rgba(255, 255, 255, 0.18);
-    color: #c4c4c8;
+    border-color: rgba(17, 17, 17, 0.12);
+    color: #666;
   }
 }
 
